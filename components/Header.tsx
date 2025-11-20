@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import type { User, Page } from '../types';
 import { Page as PageEnum } from '../types';
 import UniversityLogo from './UniversityLogo';
+import { MenuIcon } from './icons';
 
 interface HeaderProps {
   user: User;
   onLogout: () => void;
   setCurrentPage: (page: Page) => void;
+  onToggleSidebar: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ user, onLogout, setCurrentPage }) => {
+const Header: React.FC<HeaderProps> = ({ user, onLogout, setCurrentPage, onToggleSidebar }) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const handleNavigate = (page: Page) => {
@@ -18,13 +20,20 @@ const Header: React.FC<HeaderProps> = ({ user, onLogout, setCurrentPage }) => {
   };
 
   return (
-    <header className="flex items-center justify-between px-6 py-3 bg-white border-b-2 border-gray-200 shadow-md">
+    <header className="flex items-center justify-between px-4 md:px-6 py-3 bg-white border-b-2 border-gray-200 shadow-md">
       <div className="flex items-center">
+         <button 
+          onClick={onToggleSidebar} 
+          className="text-gray-500 focus:outline-none md:hidden ml-4"
+          aria-label="Open sidebar"
+        >
+          <MenuIcon />
+        </button>
         <UniversityLogo className="h-10 w-auto" />
       </div>
 
       <div className="flex items-center relative">
-        <span className="text-gray-700 text-sm font-semibold mr-4">مرحباً, {user.name}</span>
+        <span className="text-gray-700 text-sm font-semibold mr-4 hidden sm:block">مرحباً, {user.name}</span>
         <button onClick={() => setDropdownOpen(!dropdownOpen)} className="relative z-10 block h-10 w-10 rounded-full overflow-hidden border-2 border-orange-400 focus:outline-none focus:ring-2 focus:ring-orange-500">
           <img className="h-full w-full object-cover" src={user.avatar} alt="صورة المستخدم" />
         </button>
@@ -36,8 +45,6 @@ const Header: React.FC<HeaderProps> = ({ user, onLogout, setCurrentPage }) => {
               <button onClick={() => handleNavigate(PageEnum.Profile)} className="w-full text-right block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white">
                 صفحتي الشخصية
               </button>
-              <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white">طلب المساعدة</a>
-              <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-500 hover:text-white">البريد الوارد</a>
               <div className="border-t border-gray-200"></div>
               <button onClick={onLogout} className="w-full text-right block px-4 py-2 text-sm text-gray-700 hover:bg-red-500 hover:text-white">
                 تسجيل الخروج

@@ -107,24 +107,25 @@ const FinalQuizPage: React.FC<FinalQuizPageProps> = ({
     const moduleTitle = module ? module.title : `الموديول ${currentModuleId}`;
 
     return (
-        <div className="min-h-screen bg-gray-200 flex flex-col items-center justify-center p-4">
+        <div className="min-h-screen bg-gray-200 flex flex-col items-center justify-center p-2 sm:p-4">
              <div className="w-full max-w-4xl">
-                <h1 className="text-3xl font-bold text-gray-800 mb-6 text-center">الاختبار البعدي: {moduleTitle}</h1>
-                <div className='bg-white p-8 rounded-xl shadow-lg w-full relative'>
-                    <div className="absolute top-4 left-4 bg-gray-700 text-white text-lg font-mono px-4 py-2 rounded-lg shadow-md">
-                        <span>الوقت: {formatTime(time)}</span>
-                    </div>
-
-                    {isAdmin && (
-                        <div className="absolute top-4 right-4 z-10">
-                            <button
-                                onClick={() => setIsEditing(!isEditing)}
-                                className={`px-4 py-2 rounded-lg font-bold text-white transition ${isEditing ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'}`}
-                            >
-                                {isEditing ? 'إنهاء التعديل' : 'تعديل الاختبار'}
-                            </button>
+                <div className='bg-white p-4 sm:p-8 rounded-xl shadow-lg w-full'>
+                    <div className="flex flex-col-reverse sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+                        <h1 className="text-2xl md:text-3xl font-bold text-gray-800">الاختبار البعدي: {moduleTitle}</h1>
+                        <div className="flex items-center justify-between sm:justify-end w-full sm:w-auto gap-4">
+                            <div className="bg-gray-700 text-white text-base md:text-lg font-mono px-3 py-1.5 rounded-lg shadow-md">
+                                <span>الوقت: {formatTime(time)}</span>
+                            </div>
+                            {isAdmin && (
+                                <button
+                                    onClick={() => setIsEditing(!isEditing)}
+                                    className={`px-3 py-1.5 rounded-lg font-bold text-white transition text-sm ${isEditing ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'}`}
+                                >
+                                    {isEditing ? 'إنهاء التعديل' : 'تعديل الاختبار'}
+                                </button>
+                            )}
                         </div>
-                    )}
+                    </div>
 
                     {showScore ? (
                         <div className='text-center pt-8'>
@@ -169,7 +170,7 @@ const FinalQuizPage: React.FC<FinalQuizPageProps> = ({
                         </div>
                     ) : (
                         <>
-                            <div className='mb-6 pt-8'>
+                            <div className='mb-6'>
                                 <div className='text-xl font-semibold text-gray-600 mb-4'>
                                     <span>السؤال {currentQuestion + 1}</span>/{questions.length}
                                 </div>

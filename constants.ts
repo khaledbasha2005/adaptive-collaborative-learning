@@ -1,15 +1,12 @@
+
 import { Page } from './types';
 
 export const PAGES: Page[] = [
-  // Fix: Use enum members instead of string literals to satisfy the Page[] type.
   Page.Home,
   Page.Instructions,
   Page.News,
-  Page.Description,
   Page.Content,
-  Page.Tools,
   Page.Goals,
-  Page.Quizzes,
   Page.Activity,
   Page.AdminDashboard,
 ];
@@ -21,7 +18,7 @@ export const MOCK_USER = {
   avatar: 'https://picsum.photos/100/100',
 };
 
-export const ADMIN_USER_EMAIL = 'lab65274@gmail.com';
+export const ADMIN_USER_EMAIL = 'admuser.collearning.2025@gmail.com';
 
 export const ADMIN_USER = {
   id: 99,
@@ -30,7 +27,7 @@ export const ADMIN_USER = {
   avatar: 'https://picsum.photos/100/101',
 }
 
-export const NEWS_ITEMS = [
+export const INITIAL_NEWS_ITEMS = [
     { id: 1, title: "موعد تسليم الأنشطة للموديول الأول", content: "يرجى من جميع الطلاب تسليم أنشطة الموديول الأول قبل نهاية الأسبوع. بالتوفيق للجميع في دراستكم." },
     { id: 2, title: "إعلان عن ورشة عمل جديدة", content: "سيتم عقد ورشة عمل حول 'مهارات البحث المتقدم' يوم الثلاثاء القادم. التسجيل مفتوح الآن." },
     { id: 3, title: "تحديثات في بيئة التعلم", content: "تم إضافة ميزات جديدة إلى المنصة لتحسين تجربة التعلم. استكشفوها الآن!" },

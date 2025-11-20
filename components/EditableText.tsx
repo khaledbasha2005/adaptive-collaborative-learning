@@ -7,9 +7,10 @@ interface EditableTextProps {
   initialText: string | null | undefined;
   onSave: (newText: string) => void;
   textarea?: boolean;
+  className?: string;
 }
 
-const EditableText: React.FC<EditableTextProps> = ({ isAdmin, initialText, onSave, textarea = false }) => {
+const EditableText: React.FC<EditableTextProps> = ({ isAdmin, initialText, onSave, textarea = false, className }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [text, setText] = useState(initialText || '');
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -35,7 +36,7 @@ const EditableText: React.FC<EditableTextProps> = ({ isAdmin, initialText, onSav
   };
   
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey && !textarea) {
         e.preventDefault();
         handleSave();
     } else if (e.key === 'Escape') {
@@ -44,14 +45,14 @@ const EditableText: React.FC<EditableTextProps> = ({ isAdmin, initialText, onSav
     }
   };
 
-  if (!isAdmin) {
-    const baseClasses = textarea 
-      ? "text-gray-700 leading-relaxed" 
-      : "text-2xl text-gray-800 font-bold bg-gray-100 p-6 rounded-lg leading-relaxed";
-      
-    const displayText = textarea ? (text || '').split('\n').map((line, i) => <p key={i} className="mb-2">{line}</p>) : text;
+  const baseClasses = textarea 
+    ? "text-gray-700 leading-relaxed" 
+    : "text-2xl text-gray-800 font-bold bg-gray-100 p-6 rounded-lg leading-relaxed";
+  
+  const finalClassName = `${className || baseClasses} whitespace-pre-wrap`;
 
-    return <div className={baseClasses}>{displayText}</div>;
+  if (!isAdmin) {
+    return <div className={finalClassName}>{text}</div>;
   }
 
   if (isEditing) {
@@ -69,9 +70,9 @@ const EditableText: React.FC<EditableTextProps> = ({ isAdmin, initialText, onSav
   }
 
   return (
-    <div className="relative group">
-        <div className={textarea ? "text-gray-700 leading-relaxed" : "text-2xl text-gray-800 font-bold bg-gray-100 p-6 rounded-lg leading-relaxed"}>
-         {textarea ? (text || '').split('\n').map((line, i) => <p key={i} className="mb-2">{line}</p>) : text}
+    <div className="relative group w-full">
+        <div className={finalClassName}>
+         {text}
         </div>
       <button
         onClick={() => setIsEditing(true)}

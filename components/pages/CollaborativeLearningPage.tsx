@@ -60,19 +60,19 @@ const CollaborativeLearningPage: React.FC<CollaborativeLearningPageProps> = ({
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
           التعليم التشاركي - النشاط {activityId}
         </h1>
         <button
           onClick={onBack}
-          className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition"
         >
           العودة إلى الأنشطة
         </button>
       </div>
-      <div className="bg-white p-4 sm:p-6 md:p-8 rounded-xl shadow-lg flex flex-col h-[75vh]">
-        <h2 className="text-2xl font-bold text-blue-700 mb-4 border-b pb-2">
+      <div className="bg-white p-4 sm:p-6 rounded-xl shadow-lg flex flex-col h-[75vh]">
+        <h2 className="text-xl md:text-2xl font-bold text-blue-700 mb-4 border-b pb-2">
           مناقشة المجموعة: <span className="text-red-600">{userGroup.name}</span>
         </h2>
         
@@ -88,7 +88,7 @@ const CollaborativeLearningPage: React.FC<CollaborativeLearningPageProps> = ({
                 <img src={msg.author.avatar} alt={msg.author.name} className="w-10 h-10 rounded-full" />
                 <div className={`max-w-xs md:max-w-md p-3 rounded-lg ${msg.author.id === user.id ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}>
                   <p className="font-bold text-sm mb-1">{msg.author.id === user.id ? 'أنا' : msg.author.name}</p>
-                  <p>{msg.text}</p>
+                  <p className="break-words">{msg.text}</p>
                    <p className={`text-xs mt-1 opacity-75 ${msg.author.id === user.id ? 'text-blue-100' : 'text-gray-500'}`}>
                         {new Date(msg.timestamp).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}
                    </p>

@@ -1,18 +1,78 @@
 
-
-import React from 'react';
+import React, { useRef } from 'react';
 import { activitiesByModule } from '../../activities';
 
 interface ActivityPageProps {
   onStartFinalQuiz: () => void;
   onStartActivity: (activityId: number) => void;
   currentModuleId: number | null;
+  isPostTestCompleted?: boolean;
+  onNavigateToModuleContent?: () => void;
+  isAdmin: boolean;
+  onSubmitActivity: (activityId: number, file: File) => void;
 }
 
-const ActivityPage: React.FC<ActivityPageProps> = ({ onStartFinalQuiz, onStartActivity, currentModuleId }) => {
+const ActivityPage: React.FC<ActivityPageProps> = ({ 
+  onStartFinalQuiz, 
+  onStartActivity, 
+  currentModuleId,
+  isPostTestCompleted,
+  onNavigateToModuleContent,
+  isAdmin,
+  onSubmitActivity
+}) => {
   const moduleActivities = (currentModuleId && activitiesByModule[currentModuleId]?.length > 0)
     ? activitiesByModule[currentModuleId]
     : null;
+
+  // Helper to render activity actions
+  const renderActivityActions = (activityId: number) => {
+    // Use a unique ref for each file input
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            onSubmitActivity(activityId, e.target.files[0]);
+        }
+    };
+
+    const triggerFileInput = () => {
+        fileInputRef.current?.click();
+    };
+
+    return (
+        <div className="mt-6 flex justify-start gap-4">
+            <button onClick={() => onStartActivity(activityId)} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition">
+                ابدا النشاط {activityId}
+            </button>
+            
+            {!isAdmin && (
+                <>
+                    <input 
+                        type="file" 
+                        ref={fileInputRef}
+                        style={{ display: 'none' }}
+                        onChange={handleFileChange}
+                    />
+                    <button onClick={triggerFileInput} className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-lg transition">
+                        تحميل
+                    </button>
+                </>
+            )}
+        </div>
+    );
+  };
+
+  // Helper Component wrapper to allow hooks usage inside map
+  const ActivityItem = ({ activityId, children }: { activityId: number, children?: React.ReactNode }) => {
+     return (
+         <div>
+            {children}
+            {renderActivityActions(activityId)}
+         </div>
+     )
+  }
+
 
   const renderDefaultActivities = () => (
     <>
@@ -37,11 +97,7 @@ const ActivityPage: React.FC<ActivityPageProps> = ({ onStartFinalQuiz, onStartAc
             </li>
           </ol>
         </div>
-        <div className="mt-6 flex justify-start">
-          <button onClick={() => onStartActivity(1)} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition">
-            ابدا النشاط 1
-          </button>
-        </div>
+        <ActivityItem activityId={1}><span></span></ActivityItem>
       </div>
 
       {/* Activity 2 */}
@@ -65,11 +121,7 @@ const ActivityPage: React.FC<ActivityPageProps> = ({ onStartFinalQuiz, onStartAc
             <li>يتوصلون جماعيًا إلى أن الحل هو ظهور المكتبات الافتراضية ثلاثية الأبعاد.</li>
           </ol>
         </div>
-        <div className="mt-6 flex justify-start">
-          <button onClick={() => onStartActivity(2)} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition">
-            ابدا النشاط 2
-          </button>
-        </div>
+        <ActivityItem activityId={2}><span></span></ActivityItem>
       </div>
 
       {/* Activity 3 */}
@@ -87,11 +139,7 @@ const ActivityPage: React.FC<ActivityPageProps> = ({ onStartFinalQuiz, onStartAc
               <h3 className="text-xl font-semibold text-red-600 mt-4 mb-2">النتيجة:</h3>
               <p className="text-gray-700">خريطة ذهنية تشاركية توضح التعريف والمسميات المختلفة بشكل واضح ومترابط.</p>
           </div>
-          <div className="mt-6 flex justify-start">
-              <button onClick={() => onStartActivity(3)} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition">
-              ابدا النشاط 3
-              </button>
-          </div>
+          <ActivityItem activityId={3}><span></span></ActivityItem>
       </div>
 
       {/* Activity 4 */}
@@ -108,11 +156,7 @@ const ActivityPage: React.FC<ActivityPageProps> = ({ onStartFinalQuiz, onStartAc
                   <li>مهمة كل طالب هي اختيار الخدمات التي تمثل خدمات تقدمها المكتبات الافتراضية ثلاثية الأبعاد.</li>
               </ol>
           </div>
-          <div className="mt-6 flex justify-start">
-              <button onClick={() => onStartActivity(4)} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition">
-              ابدا النشاط 4
-              </button>
-          </div>
+          <ActivityItem activityId={4}><span></span></ActivityItem>
       </div>
       
       {/* Activity 5 */}
@@ -128,11 +172,7 @@ const ActivityPage: React.FC<ActivityPageProps> = ({ onStartFinalQuiz, onStartAc
                   <li>كل طالب يقوم بتوصيل كل نوع من المكتبات مع الخصائص التي تناسبه في أسرع وقت ممكن.</li>
               </ol>
           </div>
-          <div className="mt-6 flex justify-start">
-              <button onClick={() => onStartActivity(5)} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition">
-              ابدا النشاط 5
-              </button>
-          </div>
+          <ActivityItem activityId={5}><span></span></ActivityItem>
       </div>
     </>
   );
@@ -152,11 +192,7 @@ const ActivityPage: React.FC<ActivityPageProps> = ({ onStartFinalQuiz, onStartAc
               ))}
             </ol>
           </div>
-          <div className="mt-6 flex justify-start">
-            <button onClick={() => onStartActivity(activity.id)} className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition">
-              ابدا النشاط {activity.id}
-            </button>
-          </div>
+          <ActivityItem activityId={activity.id}><span></span></ActivityItem>
         </div>
       ))}
     </>
@@ -169,12 +205,21 @@ const ActivityPage: React.FC<ActivityPageProps> = ({ onStartFinalQuiz, onStartAc
         {moduleActivities ? renderModuleActivities() : renderDefaultActivities()}
       </div>
        <div className="mt-12 flex justify-center">
-          <button
-            onClick={onStartFinalQuiz}
-            className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition text-lg transform hover:scale-105"
-          >
-            ابدأ الاختبار البعدي
-          </button>
+          {isPostTestCompleted && !isAdmin ? (
+              <button
+                onClick={onNavigateToModuleContent}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg transition text-lg transform hover:scale-105"
+              >
+                العودة إلى المحتوى
+              </button>
+          ) : (
+              <button
+                onClick={onStartFinalQuiz}
+                className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-lg transition text-lg transform hover:scale-105"
+              >
+                ابدأ الاختبار البعدي
+              </button>
+          )}
         </div>
     </div>
   );

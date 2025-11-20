@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import type { User, Group } from '../../types';
 
 interface GroupFormationPageProps {
@@ -7,7 +8,10 @@ interface GroupFormationPageProps {
   groups: Group[];
   onCreateGroup: () => void;
   onJoinGroup: (groupId: string) => void;
-  onLeaveGroup: (groupId: string) => void;
+  onRemoveUserFromGroup: (groupId: string, userId: number) => void;
+  onAddUserToGroup: (groupId: string, userId?: number) => void;
+  isAdmin: boolean;
+  allUsers: User[];
 }
 
 const GroupFormationPage: React.FC<GroupFormationPageProps> = ({ 
@@ -16,24 +20,39 @@ const GroupFormationPage: React.FC<GroupFormationPageProps> = ({
   groups,
   onCreateGroup,
   onJoinGroup,
-  onLeaveGroup
+  onRemoveUserFromGroup,
+  onAddUserToGroup,
+  isAdmin,
+  allUsers,
 }) => {
+  const [showAddUserModal, setShowAddUserModal] = useState<string | null>(null); // stores groupId to add to
+  const [selectedUserIdToAdd, setSelectedUserIdToAdd] = useState<number | string>("");
+
   const userGroup = groups.find(group => group.members.some(member => member.id === user.id));
   const canJoinGroup = !userGroup;
+  
+  const handleAddUserSubmit = () => {
+      if (showAddUserModal && selectedUserIdToAdd) {
+          onAddUserToGroup(showAddUserModal, Number(selectedUserIdToAdd));
+          setShowAddUserModal(null);
+          setSelectedUserIdToAdd("");
+      }
+  };
 
   return (
     <div>
       <h1 className="text-3xl font-bold text-gray-800 mb-6">تكوين المجموعات التشاركية</h1>
-      <div className="bg-white p-8 rounded-xl shadow-lg">
+      <div className="bg-white p-8 rounded-xl shadow-lg relative">
         <div className="flex justify-between items-center mb-6 border-b pb-4">
-          <h2 className="text-2xl font-bold text-blue-700">خطوات تكوين المجموعة</h2>
-          <button 
-            onClick={onCreateGroup} 
-            disabled={!canJoinGroup}
-            className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition disabled:bg-gray-400 disabled:cursor-not-allowed"
-          >
-            انشاء مجموعة جديدة
-          </button>
+          <h2 className="text-2xl font-bold text-blue-700">قائمة المجموعات</h2>
+          {isAdmin && (
+            <button 
+              onClick={onCreateGroup} 
+              className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-lg transition"
+            >
+              انشاء مجموعة جديدة
+            </button>
+          )}
         </div>
         
         {userGroup && (
@@ -44,7 +63,7 @@ const GroupFormationPage: React.FC<GroupFormationPageProps> = ({
 
         <div className="space-y-4">
           {groups.length === 0 ? (
-            <p className="text-center text-gray-500 py-8">لا توجد مجموعات حاليًا. كن أول من ينشئ مجموعة!</p>
+            <p className="text-center text-gray-500 py-8">لا توجد مجموعات حاليًا. {isAdmin ? 'قم بإنشاء مجموعة جديدة.' : 'انتظر حتى تقوم الباحثة بإنشاء المجموعات.'}</p>
           ) : (
             groups.map(group => (
               <div key={group.id} className="bg-gray-50 p-4 rounded-lg border">
@@ -53,30 +72,49 @@ const GroupFormationPage: React.FC<GroupFormationPageProps> = ({
                     <h3 className="text-xl font-bold text-gray-800">{group.name}</h3>
                     <p className="text-sm text-gray-600">{group.members.length} / 4 أعضاء</p>
                   </div>
-                  {userGroup?.id === group.id ? (
-                     <button onClick={() => onLeaveGroup(group.id)} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg transition">
-                       مغادرة
-                     </button>
-                  ) : canJoinGroup && group.members.length < 4 ? (
-                     <button onClick={() => onJoinGroup(group.id)} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition">
-                       انضمام
-                     </button>
-                  ) : (
-                    <button disabled className="bg-gray-300 text-gray-500 font-bold py-2 px-4 rounded-lg cursor-not-allowed">
-                       {group.members.length >= 4 ? 'ممتلئة' : 'لا يمكن الانضمام'}
-                    </button>
-                  )}
+                  {(() => {
+                      if (isAdmin) {
+                          if (group.members.length < 4) {
+                              return <button onClick={() => setShowAddUserModal(group.id)} className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded-lg transition">إضافة عضو</button>;
+                          }
+                          return <button disabled className="bg-gray-300 text-gray-500 font-bold py-2 px-4 rounded-lg cursor-not-allowed">ممتلئة</button>;
+                      }
+                      
+                      if (userGroup?.id === group.id) {
+                          return <span className="text-green-600 font-semibold px-4">أنت هنا</span>;
+                      }
+                      if (canJoinGroup && group.members.length < 4) {
+                          return <button onClick={() => onJoinGroup(group.id)} className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition">انضمام</button>;
+                      }
+                      return <button disabled className="bg-gray-300 text-gray-500 font-bold py-2 px-4 rounded-lg cursor-not-allowed">{group.members.length >= 4 ? 'ممتلئة' : 'لا يمكن الانضمام'}</button>;
+                  })()}
                 </div>
                 <div className="mt-4 border-t pt-2">
                   <h4 className="text-sm font-semibold mb-2">الأعضاء:</h4>
-                  <ul className="flex flex-wrap gap-2">
-                    {group.members.map(member => (
-                      <li key={member.id} className="flex items-center bg-gray-200 rounded-full px-3 py-1 text-sm">
-                        <img src={member.avatar} alt={member.name} className="w-6 h-6 rounded-full ml-2" />
-                        {member.name}
-                      </li>
-                    ))}
-                  </ul>
+                  {group.members.length > 0 ? (
+                    <ul className="space-y-2">
+                      {group.members.map(member => (
+                        <li key={member.id} className="flex items-center justify-between bg-gray-200 rounded-lg px-3 py-1 text-sm">
+                          <div className="flex items-center">
+                            <img src={member.avatar} alt={member.name} className="w-6 h-6 rounded-full ml-2" />
+                            {member.name}
+                            {member.id === user.id && <span className="text-xs text-blue-600 mr-2">(أنت)</span>}
+                          </div>
+                          {isAdmin && (
+                            <button
+                              onClick={() => onRemoveUserFromGroup(group.id, member.id)}
+                              className="bg-red-500 hover:bg-red-600 text-white text-xs font-bold py-1 px-2 rounded"
+                              title={`إزالة ${member.name}`}
+                            >
+                              إزالة
+                            </button>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-gray-500 text-sm italic">لا يوجد أعضاء في هذه المجموعة بعد.</p>
+                  )}
                 </div>
               </div>
             ))
@@ -92,6 +130,49 @@ const GroupFormationPage: React.FC<GroupFormationPageProps> = ({
             الانتقال إلى محتوى الموديول
           </button>
         </div>
+        
+        {/* Admin Add User Modal */}
+        {showAddUserModal && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-white p-6 rounded-lg shadow-xl w-full max-w-md">
+                    <h3 className="text-xl font-bold mb-4 text-gray-800">إضافة عضو إلى المجموعة</h3>
+                    <div className="mb-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">اختر المستخدم:</label>
+                        <select 
+                            className="w-full border border-gray-300 rounded-md p-2"
+                            value={selectedUserIdToAdd}
+                            onChange={(e) => setSelectedUserIdToAdd(e.target.value)}
+                        >
+                            <option value="">-- اختر مستخدم --</option>
+                            {allUsers.map(u => {
+                                // Check if user is already in a group
+                                const isInGroup = groups.some(g => g.members.some(m => m.id === u.id));
+                                return (
+                                    <option key={u.id} value={u.id}>
+                                        {u.name} ({u.email}) {isInGroup ? '- في مجموعة' : ''}
+                                    </option>
+                                )
+                            })}
+                        </select>
+                    </div>
+                    <div className="flex justify-end gap-2">
+                        <button 
+                            onClick={() => setShowAddUserModal(null)}
+                            className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded"
+                        >
+                            إلغاء
+                        </button>
+                        <button 
+                            onClick={handleAddUserSubmit}
+                            disabled={!selectedUserIdToAdd}
+                            className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:bg-gray-400"
+                        >
+                            إضافة
+                        </button>
+                    </div>
+                </div>
+            </div>
+        )}
       </div>
     </div>
   );

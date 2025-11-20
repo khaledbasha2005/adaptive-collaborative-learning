@@ -31,7 +31,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    if (email === ADMIN_USER.email && password === '12345678') {
+    if (email === ADMIN_USER.email && password === 'collearningadmin#2025') {
       onLogin(ADMIN_USER);
       return;
     }
@@ -94,17 +94,17 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center bg-cover bg-center" style={backgroundStyle}>
-      <div className="relative z-10 w-full max-w-2xl mx-auto p-8 bg-white/80 backdrop-blur-sm rounded-xl shadow-2xl border border-gray-200 text-gray-800">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center bg-cover bg-center p-4" style={backgroundStyle}>
+      <div className="relative z-10 w-full max-w-md mx-auto p-6 md:p-8 bg-white/80 backdrop-blur-sm rounded-xl shadow-2xl border border-gray-200 text-gray-800">
         <div className="text-center mb-8">
           <div className="flex justify-center items-center w-full mb-4">
-             <UniversityLogo className="h-24" />
+             <UniversityLogo className="h-20 md:h-24" />
           </div>
-          <h1 className="text-4xl font-bold text-red-500">بيئة التعلم التكيفية التشاركية</h1>
-          <p className="text-lg mt-2 text-gray-600">مرحبًا بك في بيئة التعلم المستقبلية</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-red-500">بيئة التعلم التكيفية التشاركية</h1>
+          <p className="text-base md:text-lg mt-2 text-gray-600">مرحبًا بك في بيئة التعلم المستقبلية</p>
         </div>
         
-        <div className="p-8 bg-blue-800 rounded-lg text-white">
+        <div className="p-6 md:p-8 bg-blue-800 rounded-lg text-white">
           {isLoginView ? (
             <>
               <h2 className="text-2xl font-bold text-center mb-6">تسجيل الدخول</h2>

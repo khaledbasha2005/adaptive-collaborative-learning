@@ -33,8 +33,8 @@ const StudentProfileView: React.FC<{ student: User, scores: { [key: number]: any
     return (
         <>
             <div className="bg-gray-50 p-6 rounded-lg shadow-md mb-6">
-                <div className="flex items-center">
-                    <img src={student.avatar} alt="صورة الطالب" className="w-24 h-24 rounded-full mr-6 border-4 border-blue-500" />
+                <div className="flex flex-col sm:flex-row items-center text-center sm:text-right">
+                    <img src={student.avatar} alt="صورة الطالب" className="w-24 h-24 rounded-full mr-0 sm:mr-6 mb-4 sm:mb-0 border-4 border-blue-500" />
                     <div>
                         <h2 className="text-2xl font-bold text-gray-800">{student.name}</h2>
                         <p className="text-gray-600">{student.email}</p>
@@ -135,9 +135,9 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, allModuleScores, quizQu
             return (
                 <div>
                     <div className="flex justify-between items-center mb-6">
-                        <h1 className="text-3xl font-bold text-red-600">الصفحة الشخصية للطالب: {selectedStudent.name}</h1>
-                        <button onClick={handleBackToList} className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition">
-                            العودة إلى قائمة الطلاب
+                        <h1 className="text-2xl md:text-3xl font-bold text-red-600">الصفحة الشخصية للطالب: {selectedStudent.name}</h1>
+                        <button onClick={handleBackToList} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition">
+                            العودة
                         </button>
                     </div>
                     <StudentProfileView
@@ -154,43 +154,71 @@ const ProfilePage: React.FC<ProfilePageProps> = ({ user, allModuleScores, quizQu
 
         return (
             <div>
-                <h1 className="text-3xl font-bold text-red-600 mb-6">قائمة الطلاب المسجلين</h1>
+                <h1 className="text-2xl md:text-3xl font-bold text-red-600 mb-6">قائمة الطلاب المسجلين</h1>
                 <div className="bg-white p-6 rounded-lg shadow-md">
                     <h3 className="text-xl font-bold text-green-600 mb-4 border-b pb-2">اسماء الطلاب</h3>
                     {studentsToList.length > 0 ? (
-                    <div className="overflow-x-auto">
-                        <table className="min-w-full bg-white">
-                            <thead className="bg-gray-100">
-                                <tr>
-                                    <th className="text-right py-3 px-4 font-semibold text-sm">اسم الطالب</th>
-                                    <th className="text-right py-3 px-4 font-semibold text-sm">المجموعة</th>
-                                    <th className="text-right py-3 px-4 font-semibold text-sm">الزملاء في المجموعة</th>
-                                    <th className="text-center py-3 px-4 font-semibold text-sm">الإجراء</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {studentsToList.map(student => {
-                                    const studentGroup = groups.find(g => g.members.some(m => m.id === student.id));
-                                    const groupMates = studentGroup ? studentGroup.members.filter(m => m.id !== student.id).map(m => m.name).join(', ') : 'لا يوجد';
-                                    return (
-                                        <tr key={student.id} className="border-b hover:bg-gray-50">
-                                            <td className="py-3 px-4 flex items-center">
-                                                <img src={student.avatar} alt={student.name} className="w-8 h-8 rounded-full ml-3" />
-                                                {student.name}
-                                            </td>
-                                            <td className="py-3 px-4">{studentGroup ? studentGroup.name : 'لم ينضم لمجموعة'}</td>
-                                            <td className="py-3 px-4">{groupMates}</td>
-                                            <td className="py-3 px-4 text-center">
-                                                <button onClick={() => handleViewStudent(student)} className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold py-1 px-3 rounded-lg transition">
-                                                    عرض التفاصيل
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
+                    <>
+                        {/* Mobile View: Cards */}
+                        <div className="md:hidden space-y-4">
+                            {studentsToList.map(student => {
+                                const studentGroup = groups.find(g => g.members.some(m => m.id === student.id));
+                                const groupMates = studentGroup ? studentGroup.members.filter(m => m.id !== student.id).map(m => m.name).join(', ') : 'لا يوجد';
+                                return (
+                                     <div key={student.id} className="bg-gray-50 p-4 rounded-lg shadow">
+                                        <div className="flex items-center mb-3">
+                                            <img src={student.avatar} alt={student.name} className="w-10 h-10 rounded-full ml-3" />
+                                            <span className="font-bold text-gray-800">{student.name}</span>
+                                        </div>
+                                        <div className="space-y-2 text-sm text-gray-600 border-t pt-3 mt-3">
+                                            <p><span className="font-semibold text-gray-700">المجموعة:</span> {studentGroup ? studentGroup.name : 'لم ينضم بعد'}</p>
+                                            <p><span className="font-semibold text-gray-700">الزملاء:</span> {groupMates}</p>
+                                        </div>
+                                        <div className="mt-4 flex justify-end">
+                                            <button onClick={() => handleViewStudent(student)} className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold py-1 px-3 rounded-lg transition">
+                                                عرض التفاصيل
+                                            </button>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
+
+                        {/* Desktop View: Table */}
+                        <div className="overflow-x-auto hidden md:block">
+                            <table className="min-w-full bg-white">
+                                <thead className="bg-gray-100">
+                                    <tr>
+                                        <th className="text-right py-3 px-4 font-semibold text-sm">اسم الطالب</th>
+                                        <th className="text-right py-3 px-4 font-semibold text-sm">المجموعة</th>
+                                        <th className="text-right py-3 px-4 font-semibold text-sm">الزملاء في المجموعة</th>
+                                        <th className="text-center py-3 px-4 font-semibold text-sm">الإجراء</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {studentsToList.map(student => {
+                                        const studentGroup = groups.find(g => g.members.some(m => m.id === student.id));
+                                        const groupMates = studentGroup ? studentGroup.members.filter(m => m.id !== student.id).map(m => m.name).join(', ') : 'لا يوجد';
+                                        return (
+                                            <tr key={student.id} className="border-b hover:bg-gray-50">
+                                                <td className="py-3 px-4 flex items-center">
+                                                    <img src={student.avatar} alt={student.name} className="w-8 h-8 rounded-full ml-3" />
+                                                    {student.name}
+                                                </td>
+                                                <td className="py-3 px-4">{studentGroup ? studentGroup.name : 'لم ينضم لمجموعة'}</td>
+                                                <td className="py-3 px-4">{groupMates}</td>
+                                                <td className="py-3 px-4 text-center">
+                                                    <button onClick={() => handleViewStudent(student)} className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-bold py-1 px-3 rounded-lg transition">
+                                                        عرض التفاصيل
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                    </>
                     ) : (
                         <p className="text-center text-gray-500 py-4">لا يوجد طلاب مسجلون بعد.</p>
                     )}

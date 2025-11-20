@@ -12,7 +12,7 @@ const LearningPathDetailPage: React.FC<LearningPathDetailPageProps> = ({ topicTi
         <h1 className="text-3xl font-bold text-black">{topicTitle}</h1>
         <button
           onClick={onBack}
-          className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition"
+          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg transition"
         >
           العودة إلى المسار
         </button>

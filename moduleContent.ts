@@ -1,3 +1,4 @@
+
 // Represents the content from the uploaded PDFs
 
 interface Lesson {
@@ -11,7 +12,7 @@ export const moduleContent: { [key: number]: Lesson[] } = {
             title: "مراحل تطور المكتبات",
             pages: [
                 `الأهداف التعليمية:
-[IMAGE_PLACEHOLDER]
+
 يتوقع بعد انتهائك عزيزي الطالب من دراسة هذا الموضوع
 أن تصبح قادراً على أن:
 • تتعرف على مراحل تطور المكتبات.
@@ -618,6 +619,30 @@ export const moduleContent: { [key: number]: Lesson[] } = {
 - يمكن ان يشعر بعض المستخدمين بالدوار من الحركة داخل المكتبة ثلاثية الأبعاد خصوصا عند الحركة السريعة.
 - لابد من وجود اتصال بشبكة الإنترنت.
 - عند زيادة عدد المستخدمين في نفس الوقت قد يقل الأداء ويتمثل ذلك في بطء الحركة داخل المكتبة وصعوبة التصفح.`
+            ]
+        },
+        {
+            title: "فيديوهات تعليمية",
+            pages: [
+                `إليك مجموعة من الفيديوهات التعليمية التي توضح المهارات العملية:
+
+VIDEO_EMBED:https://www.youtube.com/embed/0MFrsZzLL3s
+
+VIDEO_EMBED:https://www.youtube.com/embed/gnA5uQfbdtQ
+
+VIDEO_EMBED:https://www.youtube.com/embed/hsSldrFl4O4
+
+VIDEO_EMBED:https://www.youtube.com/embed/1isLl1fYAAg
+
+VIDEO_EMBED:https://www.youtube.com/embed/1m59qcOgWqA
+
+VIDEO_EMBED:https://www.youtube.com/embed/TKiflkb78gU
+
+VIDEO_EMBED:https://www.youtube.com/embed/TKiflkb78gU
+
+VIDEO_EMBED:https://www.youtube.com/embed/vsWU9wcaDpw
+
+VIDEO_EMBED:https://www.youtube.com/embed/_--2isnJiA0`
             ]
         }
     ]
