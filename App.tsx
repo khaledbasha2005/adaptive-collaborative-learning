@@ -1,4 +1,4 @@
-
+/*import BackendStatus from './components/BackendStatus';*/
 import React, { useState, useCallback, useEffect } from 'react';
 import type { User, Page, Group, Message, NewsItem, CognitiveLevel } from './types';
 import { Page as PageEnum } from './types';
@@ -22,7 +22,7 @@ import ActivityPage from './components/pages/ActivityPage';
 import GroupFormationPage from './components/pages/GroupFormationPage';
 import CollaborativeLearningPage from './components/pages/CollaborativeLearningPage';
 import InstructionsPage from './components/pages/InstructionsPage';
-
+import './src/index.css';
 // Data extracted from PDF for each module
 const MODULE_DETAILS: { [key: number]: { goal: string; objectives: string } } = {
   1: {
@@ -536,6 +536,25 @@ const App: React.FC = () => {
     setGroups(prev => [...prev, newGroup]);
   }, [user, groups.length]);
 
+   const handleUpdateAvatar = (newAvatar: string) => {
+      if (user) {
+          const updatedUser = { ...user, avatar: newAvatar };
+          setUser(updatedUser);
+          // Update in
+          localStorage.setItem("userAvatar", newAvatar);
+
+          // Also update in allStudents list
+          setAllStudents(prev => prev.map(u => u.id === user.id ? updatedUser : u));
+          
+          // Also update in groups if present
+          setGroups(prev => prev.map(g => ({
+              ...g,
+              members: g.members.map(m => m.id === user.id ? updatedUser : m)
+          })));
+      }
+  };
+
+
   const handleJoinGroup = useCallback((groupId: string) => {
     if (!user) return;
     setGroups(prev => prev.map(group => {
@@ -682,6 +701,7 @@ const App: React.FC = () => {
                     isAdmin={isAdmin}
                     allStudents={allStudents}
                     groups={groups}
+                    onUpdateAvatar={handleUpdateAvatar}
                 />;
       case PageEnum.AdminDashboard:
         return <AdminDashboardPage 
@@ -832,13 +852,13 @@ const App: React.FC = () => {
       finalQuizPassed={finalQuizPassed}
       onSmartContentNavigation={handleSmartContentNavigation}
     >
+
       {renderPage()}
     </DashboardLayout>
     
   );
   
 };
-
 
 
 export default App;

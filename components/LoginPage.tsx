@@ -5,7 +5,7 @@ import UniversityLogo from './UniversityLogo';
 import { loginUser } from "../src/authservice";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../src/firebase";
-import { sendData } from '@/src/apiservice';
+import { apiService } from "../src/services/apiService";
 
 
 
@@ -75,7 +75,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
     };
 
     onLogin(newUser);
-    await sendData (newUser);
+    await apiService.addUser (newUser);
   } catch (err) {
     setError("حدث خطأ أثناء إنشاء الحساب");
     console.error(err);

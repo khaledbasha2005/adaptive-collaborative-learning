@@ -68,6 +68,7 @@ export const XIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 
+
 export const ICONS: { [key: string]: React.FC<React.SVGProps<SVGSVGElement>> } = {
     'الرئيسية': HomeIcon,
     'التعليمات': InformationCircleIcon,

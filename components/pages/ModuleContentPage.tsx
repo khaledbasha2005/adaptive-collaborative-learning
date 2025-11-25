@@ -162,26 +162,44 @@ const ModuleContentPage: React.FC<ModuleContentPageProps> = ({
           <h2 className="text-2xl font-bold text-blue-700 mb-4 pb-2 border-b-2 border-blue-200">{selectedLesson.title}</h2>
           
           <div className="bg-white p-6 md:p-8 rounded-md shadow-lg flex-1 flex flex-col min-h-[50vh]">
-             <div className="prose prose-lg max-w-none flex-grow whitespace-pre-wrap font-sans text-gray-700 text-lg leading-relaxed">
-                {pageContent.split('\n').map((line, idx) => {
-                    if (line.trim().startsWith('VIDEO_EMBED:')) {
-                        const videoUrl = line.trim().replace('VIDEO_EMBED:', '');
-                        return (
-                             <div key={idx} className="my-4 flex justify-center w-full">
-                                <div className="relative w-full max-w-md aspect-video">
-                                    <iframe 
-                                        src={videoUrl}
-                                        className="absolute top-0 left-0 w-full h-full rounded-lg shadow-md"
-                                        allow="autoplay; encrypted-media" 
-                                        allowFullScreen
-                                        title="Embedded Video"
-                                    ></iframe>
-                                </div>
-                            </div>
-                        );
-                    }
-                    return <p key={idx}>{line}</p>;
-                })}
+               <div className="prose prose-lg max-w-none flex-grow whitespace-pre-wrap font-sans text-gray-700 text-lg leading-relaxed">
+              {pageContent.split('\n').map((line, idx) => {
+                const trimmed = line.trim();
+                if (trimmed.startsWith('VIDEO_EMBED:')) {
+                  const videoUrl = trimmed.replace('VIDEO_EMBED:', '');
+                  return (
+                     <div key={idx} className="my-4 flex justify-center w-full">
+                      <div className="relative w-full max-w-md aspect-video">
+                        <iframe 
+                          src={videoUrl}
+                          className="absolute top-0 left-0 w-full h-full rounded-lg shadow-md"
+                          allow="autoplay; encrypted-media" 
+                          allowFullScreen
+                          title={`Embedded Video ${idx}`}
+                        ></iframe>
+                      </div>
+                    </div>
+                  );
+                }
+
+                if (trimmed.startsWith('PDF_LINK:')) {
+                  const url = trimmed.replace('PDF_LINK:', '').trim();
+                  return (
+                    <p key={idx} className="break-words">
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline"
+                      >
+                       عرض/تحميل الملف (PDF)
+                      </a>
+                    </p>
+                  );
+                }
+
+                return <p key={idx}>{line}</p>;
+              })}
              </div>
           </div>
 
